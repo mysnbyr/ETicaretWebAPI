@@ -1,6 +1,11 @@
+using DataAccess.Abstract;
+using DataAccess.Concrete.Context;
+using DataAccess.Concrete.EntityFramework;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,7 +30,11 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddDbContext<ETicaretWebAPIDbContext>(options => 
+            options.UseSqlServer("Data Source=DESKTOP-E6USJ5B\\SQLEXPRESS; Initial Catalog=Veritabani; Integrated Security=False;"
+            , options=>options.MigrationsAssembly("DataAccess").MigrationsHistoryTable(HistoryRepository.DefaultTableName,"dbo")
+            ));
+            services.AddTransient<IUserDal, EFUserDal>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
